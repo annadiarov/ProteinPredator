@@ -56,3 +56,23 @@ architectures['modelnet'] = [
     'unary',
     'last_unary'
 ]
+
+architectures['protein'] = [
+    'simple',
+    'resnetb',
+    'resnetb_strided',
+    'resnetb',
+    'resnetb',
+    'resnetb_strided',
+    'resnetb',
+    'resnetb',
+    'resnetb_strided',
+    'resnetb',
+    'resnetb',
+    'nearest_upsample',
+    'unary',
+    'nearest_upsample',
+    'unary',
+    'nearest_upsample',
+    'last_unary'
+]
