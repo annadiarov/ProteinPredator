@@ -248,11 +248,11 @@ def get_datasets(config):
     elif(config.dataset=='protein'):
         info_train = load_obj(config.train_info)
         info_val = load_obj(config.val_info)
-        # info_benchmark = load_obj(f'configs/protein/{config.benchmark}.pkl')
+        info_benchmark = load_obj(f'configs/protein/{config.benchmark}.pickle')
 
         train_set = ProteinDataset(info_train, config, data_augmentation=True)
         val_set = ProteinDataset(info_val, config, data_augmentation=False)
-        # benchmark_set = ProteinDataset(info_benchmark, config, data_augmentation=False)
+        benchmark_set = ProteinDataset(info_benchmark, config, data_augmentation=False)
     else:
         raise NotImplementedError
 
