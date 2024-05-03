@@ -8,7 +8,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 from torch.utils.data import Dataset
 import open3d as o3d
-from lib.benchmark_utils import to_o3d_pcd, to_tsfm, get_correspondences
+from lib.benchmark_utils import to_o3d_pcd, to_tsfm, get_correspondences_4protein
 
 
 class ProteinDataset(Dataset):
@@ -21,14 +21,13 @@ class ProteinDataset(Dataset):
         trans:          [3,1]
     """
     def __init__(self,infos,config,data_augmentation=True):
-        super(ProteinDataset,self).__init__()
+        super(ProteinDataset, self).__init__()
         self.infos = infos
         self.base_dir = config.root
         self.overlap_radius = config.overlap_radius
-        self.data_augmentation=data_augmentation
+        self.data_augmentation = data_augmentation
         self.config = config
-        
-        self.rot_factor=1.
+        self.rot_factor = 1.
         self.augment_noise = config.augment_noise
         self.max_points = 30000
 
@@ -73,15 +72,23 @@ class ProteinDataset(Dataset):
             src_pcd += (np.random.rand(src_pcd.shape[0],3) - 0.5) * self.augment_noise
             tgt_pcd += (np.random.rand(tgt_pcd.shape[0],3) - 0.5) * self.augment_noise
         
-        if(trans.ndim==1):
-            trans=trans[:,None]
+        # if(trans.ndim==1):
+        #     trans=trans[:,None]
 
         # get correspondence at fine level
         tsfm = to_tsfm(rot, trans)
-        correspondences = get_correspondences(to_o3d_pcd(src_pcd), to_o3d_pcd(tgt_pcd), tsfm,self.overlap_radius)
+        correspondences = get_correspondences_4protein(to_o3d_pcd(src_pcd), to_o3d_pcd(tgt_pcd),self.overlap_radius)
             
-        src_feats=np.ones_like(src_pcd[:,:1]).astype(np.float32)
-        tgt_feats=np.ones_like(tgt_pcd[:,:1]).astype(np.float32)
+        src_feats = np.ones_like(src_pcd[:,:1]).astype(np.float32)
+        tgt_feats = np.ones_like(tgt_pcd[:,:1]).astype(np.float32)
+
+        rotation = Rotation.from_euler('zyx', [rot[0], rot[1], rot[2]])
+        src_pcd = rotation.apply(src_pcd) + np.expand_dims(trans, axis=0)
+
+        rot = rotation.inv().as_matrix()
+        rot = rot.astype(np.float32)
+        trans = trans.reshape(3, 1)
+
         rot = rot.astype(np.float32)
         trans = trans.astype(np.float32)
         

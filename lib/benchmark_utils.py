@@ -142,6 +142,22 @@ def get_correspondences(src_pcd, tgt_pcd, trans, search_voxel_size, K=None):
     return correspondences
 
 
+def get_correspondences_4protein(src_pcd, tgt_pcd, search_voxel_size, K=None):
+    pcd_tree = o3d.geometry.KDTreeFlann(tgt_pcd)
+
+    correspondences = []
+    for i, point in enumerate(src_pcd.points):
+        [_, idx, _] = pcd_tree.search_radius_vector_3d(point, search_voxel_size)
+        if K is not None:
+            idx = idx[:K]
+        for j in idx:
+            correspondences.append([i, j])
+
+    correspondences = np.array(correspondences)
+    correspondences = torch.from_numpy(correspondences)
+    return correspondences
+
+
 def get_blue():
     """
     Get color blue for rendering
