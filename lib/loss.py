@@ -107,7 +107,12 @@ class MetricLoss(nn.Module):
             src_feats:      [N, C]
             tgt_feats:      [M, C]
         """
-        src_pcd = (torch.matmul(rot,src_pcd.transpose(0,1))+trans).transpose(0,1)
+        # For ProteinPredator
+        src_pcd -= trans.transpose(0,1)
+        src_pcd = (torch.matmul(rot,src_pcd.transpose(0,1))).transpose(0,1)
+        # Original code from OverlapPredator
+        # src_pcd = (torch.matmul(rot,src_pcd.transpose(0,1))+trans).transpose(0,1)
+
         stats=dict()
 
         src_idx = list(set(correspondence[:,0].int().tolist()))
