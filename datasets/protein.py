@@ -48,6 +48,12 @@ class ProteinDataset(Dataset):
         tgt_pcd_obj = o3d.io.read_point_cloud(tgt_path)
         tgt_pcd = np.asarray(tgt_pcd_obj.points)
 
+        total_pcd = np.concatenate([src_pcd,tgt_pcd],axis=0)
+        total_pcd = total_pcd[:,:3] - np.mean(total_pcd[:,:3], axis=0, keepdims=True)
+        total_pcd = self._scale_coords(total_pcd)
+        src_pcd = total_pcd[:len(src_pcd)]
+        tgt_pcd = total_pcd[len(src_pcd):]
+
         # if we get too many points, we do some downsampling
         if(src_pcd.shape[0] > self.max_points):
             idx = np.random.permutation(src_pcd.shape[0])[:self.max_points]
@@ -93,3 +99,36 @@ class ProteinDataset(Dataset):
         trans = trans.astype(np.float32)
         
         return src_pcd,tgt_pcd,src_feats,tgt_feats,rot,trans, correspondences, src_pcd, tgt_pcd, torch.ones(1)
+
+    @staticmethod
+    def _scale_coords(coords):
+        # Find the maximum absolute value in each dimension
+        max_x = np.max(np.abs(coords[:, 0]))
+        max_y = np.max(np.abs(coords[:, 1]))
+        max_z = np.max(np.abs(coords[:, 2]))
+        min_x = np.min(np.abs(coords[:, 0]))
+        min_y = np.min(np.abs(coords[:, 1]))
+        min_z = np.min(np.abs(coords[:, 2]))
+
+        original_width = max_x - min_x
+        original_height = max_y - min_y
+        original_depth = max_z - min_z
+
+        if original_width == 0: original_width = 1
+        if original_height == 0: original_height = 1
+        if original_depth == 0: original_depth = 1
+
+        desired_width = 1.5  # set the desired width
+        desired_height = (desired_width / original_width) * original_height
+        desired_depth = (desired_width / original_width) * original_depth
+        scale_x = desired_width / original_width
+        scale_y = desired_height / original_height
+        scale_z = desired_depth / original_depth
+
+        # Scale each dimension accordingly
+        scaled_x = coords[:, 0] * scale_x
+        scaled_y = coords[:, 1] * scale_y
+        scaled_z = coords[:, 2] * scale_z
+
+        scaled_coordinates = np.column_stack((scaled_x, scaled_y, scaled_z))
+        return scaled_coordinates
