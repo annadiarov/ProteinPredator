@@ -8,6 +8,7 @@ from lib.timer import Timer
 from lib.utils import load_obj, natural_key
 from datasets.indoor import IndoorDataset
 from datasets.kitti import KITTIDataset
+from datasets.protein import ProteinDataset
 from datasets.modelnet import get_train_datasets, get_test_datasets
 
 
@@ -244,6 +245,14 @@ def get_datasets(config):
     elif(config.dataset=='modelnet'):
         train_set, val_set = get_train_datasets(config)
         benchmark_set = get_test_datasets(config)
+    elif(config.dataset=='protein'):
+        info_train = load_obj(config.train_info)
+        info_val = load_obj(config.val_info)
+        # info_benchmark = load_obj(f'configs/protein/{config.benchmark}.pkl')
+
+        train_set = ProteinDataset(info_train, config, data_augmentation=True)
+        val_set = ProteinDataset(info_val, config, data_augmentation=False)
+        # benchmark_set = ProteinDataset(info_benchmark, config, data_augmentation=False)
     else:
         raise NotImplementedError
 
