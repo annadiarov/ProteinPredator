@@ -43,8 +43,11 @@ class ProteinDataset(Dataset):
         # get pointcloud
         src_path=os.path.join(self.base_dir,self.infos['src'][item])
         tgt_path=os.path.join(self.base_dir,self.infos['tgt'][item])
-        src_pcd = torch.load(src_path)
-        tgt_pcd = torch.load(tgt_path)
+
+        src_pcd_obj = o3d.io.read_point_cloud(src_path)
+        src_pcd = np.asarray(src_pcd_obj.points)
+        tgt_pcd_obj = o3d.io.read_point_cloud(tgt_path)
+        tgt_pcd = np.asarray(tgt_pcd_obj.points)
 
         # if we get too many points, we do some downsampling
         if(src_pcd.shape[0] > self.max_points):
