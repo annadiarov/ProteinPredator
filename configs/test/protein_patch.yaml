@@ -66,8 +66,8 @@ dataset:
   batch_size: 1 
   num_workers: 4
   augment_noise: 0.005
-  train_info: configs/protein_patch/test.pkl
-  val_info: configs/protein_patch/test.pkl
+  train_info: configs/protein_patch/test.pickle
+  val_info: configs/protein_patch/test.pickle
 
 demo:
   src_pcd: data/protein/test/1b8m_L.ply
