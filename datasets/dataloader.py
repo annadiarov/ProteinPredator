@@ -73,7 +73,8 @@ def collate_fn_descriptor(list_data, config, neighborhood_limits):
     batched_points_list = []
     batched_features_list = []
     batched_lengths_list = []
-    assert len(list_data) == 1
+    # Allow batch size bigger than 1. Proteins are not so memory demanding
+    #assert len(list_data) == 1
     
     for ind, (src_pcd,tgt_pcd,src_feats,tgt_feats,rot,trans,matching_inds, src_pcd_raw, tgt_pcd_raw, sample) in enumerate(list_data):
         batched_points_list.append(src_pcd)
