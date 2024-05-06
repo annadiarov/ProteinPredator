@@ -464,7 +464,7 @@ def get_trainer(config):
         return KITTITester(config)
     elif (config.dataset == 'modelnet'):
         return ModelnetTester(config)
-    elif (config.dataset == 'protein'):
+    elif (config.dataset == 'protein') or (config.dataset == 'protein_patch'):
         return ProteinTester(config)
     else:
         raise NotImplementedError

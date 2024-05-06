@@ -76,3 +76,23 @@ architectures['protein'] = [
     'nearest_upsample',
     'last_unary'
 ]
+
+architectures['protein_patch'] = [
+    'simple',
+    'resnetb',
+    'resnetb_strided',
+    'resnetb',
+    'resnetb',
+    'resnetb_strided',
+    'resnetb',
+    'resnetb',
+    'resnetb_strided',
+    'resnetb',
+    'resnetb',
+    'nearest_upsample',
+    'unary',
+    'nearest_upsample',
+    'unary',
+    'nearest_upsample',
+    'last_unary'
+]

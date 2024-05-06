@@ -9,6 +9,7 @@ from lib.utils import load_obj, natural_key
 from datasets.indoor import IndoorDataset
 from datasets.kitti import KITTIDataset
 from datasets.protein import ProteinDataset
+from datasets.protein_patch import ProteinPatchDataset
 from datasets.modelnet import get_train_datasets, get_test_datasets
 
 
@@ -254,6 +255,14 @@ def get_datasets(config):
         train_set = ProteinDataset(info_train, config, data_augmentation=True)
         val_set = ProteinDataset(info_val, config, data_augmentation=False)
         benchmark_set = ProteinDataset(info_benchmark, config, data_augmentation=False)
+    elif(config.dataset=='protein_patch'):
+        info_train = load_obj(config.train_info)
+        info_val = load_obj(config.val_info)
+        info_benchmark = load_obj(f'configs/protein_patch/{config.benchmark}.pickle')
+
+        train_set = ProteinPatchDataset(info_train, config, data_augmentation=True)
+        val_set = ProteinPatchDataset(info_val, config, data_augmentation=False)
+        benchmark_set = ProteinPatchDataset(info_benchmark, config, data_augmentation=False)
     else:
         raise NotImplementedError
 
