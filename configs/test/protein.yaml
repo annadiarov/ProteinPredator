@@ -70,7 +70,6 @@ dataset:
   val_info: configs/protein/info_test_ppi.pickle
 
 demo:
-  src_pcd: assets/cloud_bin_21.pth
-  tgt_pcd: assets/cloud_bin_34.pth
+  src_pcd: data/protein/test/1b8m_L.ply
+  tgt_pcd: data/protein/test/1b8m_R.ply
   n_points: 1000
-
